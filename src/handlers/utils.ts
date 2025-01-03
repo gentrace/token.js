@@ -5,6 +5,7 @@ import { LLMChatModel, LLMProvider } from '../chat/index.js'
 import { models } from '../models.js'
 import { ConfigOptions } from '../userTypes/index.js'
 import { AI21Handler } from './ai21.js'
+import { AnthropicCompatibleHandler } from './anthropic-compatible.js'
 import { AnthropicHandler } from './anthropic.js'
 import { BaseHandler } from './base.js'
 import { BedrockHandler } from './bedrock.js'
@@ -39,6 +40,8 @@ export const Handlers: Record<string, (opts: ConfigOptions) => any> = {
       models.anthropic.supportsN,
       models.anthropic.supportsStreaming
     ),
+  ['anthropic-compatible']: (opts: ConfigOptions) =>
+    new AnthropicCompatibleHandler(opts),
   ['gemini']: (opts: ConfigOptions) =>
     new GeminiHandler(
       opts,
