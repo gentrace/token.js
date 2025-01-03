@@ -19,6 +19,7 @@ export type PerplexityModel = (typeof models.perplexity.models)[number]
 export type GroqModel = (typeof models.groq.models)[number]
 export type OpenRouterModel = string
 export type OpenAICompatibleModel = string
+export type AnthropicCompatibleModel = string
 
 export type LLMChatModel =
   | OpenAIModel
@@ -32,6 +33,7 @@ export type LLMChatModel =
   | GroqModel
   | OpenRouterModel
   | OpenAICompatibleModel
+  | AnthropicCompatibleModel
 
 export type LLMProvider = keyof typeof models
 
@@ -39,6 +41,7 @@ type ProviderModelMap = {
   openai: OpenAIModel
   ai21: AI21Model
   anthropic: AnthropicModel
+  'anthropic-compatible': AnthropicCompatibleModel
   gemini: GeminiModel
   cohere: CohereModel
   bedrock: BedrockModel
