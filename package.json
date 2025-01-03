@@ -1,7 +1,11 @@
 {
   "name": "@gentrace/token.js",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "description": "Integrate 9 LLM providers with a single Typescript SDK using OpenAIs format.",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/index.cjs",
   "types": "dist/index.d.ts",
   "type": "module",
