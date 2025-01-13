@@ -1,5 +1,4 @@
 import chalk from 'chalk'
-import { lookup } from 'mime-types'
 
 import { LLMChatModel, LLMProvider } from '../chat/index.js'
 import { models } from '../models.js'
@@ -159,11 +158,17 @@ export const fetchImageAsBase64 = async (url: string): Promise<string> => {
   return btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer)))
 }
 
-export const getMimeType = (url: string): string => {
-  const parsedUrl = new URL(url)
-  const pathname = parsedUrl.pathname
-  const extension = pathname.split('.').pop()
-  return lookup(extension)
+export const getMimeType = async (url: string): Promise<string> => {
+  try {
+    const response = await fetch(url, { method: 'HEAD' })
+    const contentType = response.headers.get('content-type')
+    if (!contentType) {
+      throw new Error('No content-type header found')
+    }
+    return contentType
+  } catch (error) {
+    throw new Error(`Failed to get MIME type: ${error.message}`)
+  }
 }
 
 const isUrl = (input: string): boolean => {
@@ -182,13 +187,11 @@ export const fetchThenParseImage = async (
   urlOrBase64Image: string
 ): Promise<{ content: string; mimeType: MIMEType }> => {
   if (isUrl(urlOrBase64Image)) {
-    const content = await fetchImageAsBase64(urlOrBase64Image)
-    const mimeType = getMimeType(urlOrBase64Image)
-    if (mimeType === null) {
-      throw new Error(
-        `Failed to get the mime type for the URL: ${urlOrBase64Image}`
-      )
-    }
+    const [content, mimeType] = await Promise.all([
+      fetchImageAsBase64(urlOrBase64Image),
+      getMimeType(urlOrBase64Image),
+    ])
+
     if (!isSupportedMIMEType(mimeType)) {
       throw new InputError(`Unsupported MIME type: ${mimeType}`)
     }
